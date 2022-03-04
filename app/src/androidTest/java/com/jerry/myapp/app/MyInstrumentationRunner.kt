@@ -7,7 +7,7 @@ import dagger.hilt.android.testing.HiltTestApplication
 
 
 
-class SliideInstrumentationRunner : AndroidJUnitRunner() {
+class MyInstrumentationRunner : AndroidJUnitRunner() {
     override fun newApplication(cl: ClassLoader,
                                 className: String,
                                 context: Context

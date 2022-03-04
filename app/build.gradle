@@ -16,8 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner "com.jerry.myapp.app.SliideInstrumentationRunner"
+        testInstrumentationRunner "com.jerry.myapp.app.MyInstrumentationRunner"
 
         buildConfigField "String", "BASE_URL", "\"https://gorest.co.in\""
         buildConfigField "String", "TOKEN", "\"f339e858ced382f710f89434c228008958e39f8c105b4cfad32e15e50e30f659\""
