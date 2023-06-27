@@ -1,8 +1,6 @@
 package com.jerry.myapp.model
 
-import com.google.gson.internal.LinkedTreeMap
 import com.jerry.myapp.base.BaseResponse
-
 
 open class CreateUserResponse(
     code: Int,

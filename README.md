@@ -8,8 +8,3 @@ Test with flow : turbine\
 
 Long click to delete the user
 
-
-
-
-
-

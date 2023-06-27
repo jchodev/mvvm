@@ -12,7 +12,7 @@ import com.jerry.myapp.base.ViewState
 import com.jerry.myapp.constants.CREATE_USER_FAIL
 import com.jerry.myapp.constants.CREATE_USER_OK
 import com.jerry.myapp.constants.DELETE_USER_OK
-import com.jerry.myapp.constants.DELETW_USER_FAIL
+import com.jerry.myapp.constants.DELETE_USER_FAIL
 import com.jerry.myapp.model.*
 import com.jerry.myapp.responsitory.NetworkRepository
 import kotlinx.coroutines.async
@@ -26,16 +26,16 @@ import kotlin.math.roundToLong
 class UserListViewModel
     @Inject constructor(private val mNetworkRepository : NetworkRepository) : BaseViewModel(){
 
-    val _getUserListViewState = MutableStateFlow<ViewState<UserListResponse>>(ViewState.Normal)
+    private val _getUserListViewState = MutableStateFlow<ViewState<UserListResponse>>(ViewState.Normal)
     val getUserListState = _getUserListViewState.asStateFlow()
 
-    val _createUserViewState = MutableStateFlow<ViewState<CreateUserResponse>>(ViewState.Normal)
+    private val _createUserViewState = MutableStateFlow<ViewState<CreateUserResponse>>(ViewState.Normal)
     val createUserState = _createUserViewState.asStateFlow()
 
-    val _deleteUserViewState = MutableStateFlow<ViewState<DeleteUserResponse>>(ViewState.Normal)
+    private val _deleteUserViewState = MutableStateFlow<ViewState<DeleteUserResponse>>(ViewState.Normal)
     val deleteUserState = _deleteUserViewState.asStateFlow()
 
-    val _userListViewState = MutableStateFlow<ViewState<List<User>>>(ViewState.Normal)
+    private val _userListViewState = MutableStateFlow<ViewState<List<User>>>(ViewState.Normal)
     val userListState = _userListViewState.asStateFlow()
 
     private var _user = MutableLiveData<User>()
@@ -69,7 +69,7 @@ class UserListViewModel
                 val data = mIoScope.async {
                     return@async mNetworkRepository.getUserList(page)
                 }.await()
-                if (data?.code != null && data?.code==200) {
+                if (data.code==200) {
                     meta = data.meta
                     if (page==1){
                         userList = emptyList()
@@ -80,10 +80,9 @@ class UserListViewModel
                     _userListViewState.value = ViewState.Success(userList)
                     _getUserListViewState.value = ViewState.Success(data)
                 }
-                else if (data?.code != null){
+                else {
                     _getUserListViewState.value = ViewState.Failure(returnErrorStatusFromServer(data.code))
-                } else
-                    _getUserListViewState.value = ViewState.Failure(R.string.unknown_error)
+                }
             } catch (e: Exception) {
                 _getUserListViewState.value = ViewState.Failure(returnError(e))
             }
@@ -94,7 +93,7 @@ class UserListViewModel
         mUiScope.launch {
             _createUserViewState.value = ViewState.Loading
             try {
-                var newUser = User(
+                val newUser = User(
                     name=name,
                     email=email
                 )
@@ -154,13 +153,13 @@ class UserListViewModel
                 val data = mIoScope.async {
                     return@async mNetworkRepository.deleteUser(user.id)
                 }.await()
-                if (data?.code != null && (data?.code==DELETE_USER_OK || data?.code==DELETW_USER_FAIL)) {
+                if (data.code ==DELETE_USER_OK || data.code ==DELETE_USER_FAIL) {
                     if (data.data!=null)
                         _deleteUserViewState.value = ViewState.Failure(data.data!!.message)
                     else {
                         _deleteUserViewState.value = ViewState.Success(data)
                         val myList =  userList.toMutableList()
-                        myList?.let{
+                        myList.let{
                             myList.remove(user)
                             userList = myList.toList()
                         }

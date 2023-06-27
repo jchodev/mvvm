@@ -22,7 +22,7 @@ open class BaseViewModel () : ViewModel() {
         500 to R.string.error_500
     )
 
-    protected val job = SupervisorJob()
+    private val job = SupervisorJob()
 
 
     protected val mUiScope = CoroutineScope(Dispatchers.Main + job) //Dispatchers.Main main thread , UI thread
@@ -34,15 +34,15 @@ open class BaseViewModel () : ViewModel() {
     }
 
     fun returnError(t:Throwable) : Any{
-        if (t is SocketTimeoutException)
-            return R.string.time_out_error;
+        return if (t is SocketTimeoutException)
+            R.string.time_out_error;
         else if (t is UnknownHostException)
-            return R.string.unknown_host_error;
+            R.string.unknown_host_error;
         else
-            return t.toString()
+            t.toString()
     }
 
     fun returnErrorStatusFromServer(status:Int) : Int{
-        return if (map.containsKey(status)) map.get(status)!! else R.string.unknown_error
+        return if (map.containsKey(status)) map[status]!! else R.string.unknown_error
     }
 }

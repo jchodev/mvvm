@@ -36,17 +36,14 @@ object AppModule {
     @Singleton
     @Provides
     fun provideOKHttpClientInterceptor(): Interceptor {
-        return object:Interceptor{
-            override fun intercept(chain: Interceptor.Chain): Response {
+        return Interceptor { chain ->
+            val original = chain.request()
 
-                val original = chain.request()
+            val newRequest = original.newBuilder()
+                .addHeader("Authorization", "Bearer " +BuildConfig.TOKEN)
+                .build()
 
-                val newRequest = original.newBuilder()
-                    .addHeader("Authorization", "Bearer " +BuildConfig.TOKEN)
-                    .build()
-
-                return chain.proceed(newRequest)
-            }
+            chain.proceed(newRequest)
         }
     }
 
